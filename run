@@ -1,0 +1,6 @@
+#!/bin/bash
+
+node memberBak.js 2>"memberBak.log" &
+
+echo "type 'kill -9 $!' to end process!"
+echo "type 'kill -9 $!' to end process!" >> "memberBak.log"
