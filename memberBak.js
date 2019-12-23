@@ -3,7 +3,7 @@
 	MemberBak
 		by Luna Catastrophe
 		Created: 12/21/2019
-		Latest:
+		Latest: 12/22/2019
 		Description: Backs up users of a group and restores the backup by sending invites to the backup list.
 
 */
@@ -97,6 +97,17 @@ function backupCreate (msg) {
 
 	var embed = new RichEmbed()
 		// Set the title of the field
+		.setTitle("Run this to restore your backup!")
+		// Set the color of the embed
+		.setColor(0x40e0d0)
+		// Set the main content of the embed
+		.setDescription(`${pre}backup restore -n ${msg.guild.id}`);
+;
+	// Send the embed to the user
+	msg.author.send(embed);
+
+	var embed = new RichEmbed()
+		// Set the title of the field
 		.setTitle("Check your DMs!")
 		// Set the color of the embed
 		.setColor(0x40e0d0)
@@ -106,7 +117,7 @@ function backupCreate (msg) {
 	msg.channel.send(embed);
 }
 
-function backupRestore (msg) {
+function backupRestore (msg, guild = msg.guild.id) {
 	// Validate for administrator and server.
 	if (msg.member == null) {
 		logMessage("Not in a server.");
@@ -118,8 +129,8 @@ function backupRestore (msg) {
 		msg.reply("Only an admin may run this command.")
 		return;
 	} else logMessage("Admin.");
-	if (guilds[msg.guild.id])
-		var members = guilds[msg.guild.id].members;
+	if (guilds[guild])
+		var members = guilds[guild].members;
 	// logMessage(members);
 	if (members) {
 		const invite = msg.channel.createInvite()
@@ -171,8 +182,13 @@ client.on('message', msg => {
 				case "backup restore":
 					msg.channel.send("restoring from backup...")
 					backupRestore(msg)
-					// guildRestore(msg,"Member List")
 					break;
+			}
+			if (cmd.startsWith("backup restore -n ")) {
+				guildName = cmd.split(" ").splice(3).join(" ")
+				console.log(guildName)
+				msg.channel.send("restoring from backup...")
+				backupRestore(msg, guildName)
 			}
 		}
 	}
